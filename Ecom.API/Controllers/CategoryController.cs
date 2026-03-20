@@ -1,4 +1,6 @@
-﻿using Ecom.API.DTOs;
+﻿using AutoMapper;
+using Ecom.API.DTOs;
+using Ecom.API.Helpers;
 using Ecom.Core.Entities.Product;
 using Ecom.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -16,7 +18,7 @@ namespace Ecom.API.Controllers
             try
             {
                 var categories=await _unitOfWork.categoryRepository.GetAllAsync();
-                 return categories is null?NotFound() : Ok(categories);
+                 return categories is null?NotFound(new ResponseAPI(404)) : Ok(categories);
             }
             catch (Exception e)
             {
@@ -29,7 +31,7 @@ namespace Ecom.API.Controllers
             try
             {
                 var category= await _unitOfWork.categoryRepository.GetByIdAsync(id);
-                return category is null?NotFound() : Ok(category);
+                return category is null?NotFound(new ResponseAPI(404)) : Ok(category);
             }
             catch (Exception e)
             {
@@ -51,7 +53,7 @@ namespace Ecom.API.Controllers
                 await _unitOfWork.categoryRepository.AddAsync(newCategory);
                 return Ok("Category Added Successfully");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest("failed add this category");
             }
