@@ -1,5 +1,7 @@
+using Ecom.API.Mapping;
 using Ecom.Infrastructure;
-
+using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
 namespace Ecom.API
 {
     public class Program
@@ -16,6 +18,9 @@ namespace Ecom.API
             builder.Services.AddSwaggerGen();
 
             builder.Services.InfrastructureConfiguration(builder.Configuration);
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+           // builder.Services.AddAutoMapper(typeof(CategoryMapping));
+
 
             var app = builder.Build();
 

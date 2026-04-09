@@ -2,11 +2,11 @@
 {
     public record CategoryDto
     {
-        public string CategoryName { get; set; }
-        public string CategoryDescription { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
     }
     public record UpdateCategoryDto: CategoryDto
     {
-        public int CategoryId { get; set; }
+        public int Id { get; set; }
     }
 }

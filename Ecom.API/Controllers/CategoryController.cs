@@ -1,4 +1,6 @@
-﻿using Ecom.API.DTOs;
+﻿using AutoMapper;
+using Ecom.API.DTOs;
+using Ecom.API.Helpers;
 using Ecom.Core.Entities.Product;
 using Ecom.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -8,7 +10,7 @@ namespace Ecom.API.Controllers
 {
     public class CategoryController : BaseController
     {
-        public CategoryController(IUnitOfWork unitOfWork):base(unitOfWork) {}
+        public CategoryController(IUnitOfWork unitOfWork, IMapper mapper):base(unitOfWork, mapper) {}
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> Get()
@@ -16,7 +18,7 @@ namespace Ecom.API.Controllers
             try
             {
                 var categories=await _unitOfWork.categoryRepository.GetAllAsync();
-                 return categories is null?NotFound() : Ok(categories);
+                 return categories is null?NotFound(new ResponseAPI(404)) : Ok(categories);
             }
             catch (Exception e)
             {
@@ -29,7 +31,7 @@ namespace Ecom.API.Controllers
             try
             {
                 var category= await _unitOfWork.categoryRepository.GetByIdAsync(id);
-                return category is null?NotFound() : Ok(category);
+                return category is null?NotFound(new ResponseAPI(404)) : Ok(category);
             }
             catch (Exception e)
             {
@@ -42,16 +44,14 @@ namespace Ecom.API.Controllers
         {
             try
             {
-                var newCategory = new Category()
-                {
-                    Name = category.CategoryName,
-                    Description = category.CategoryDescription
-                };
 
+                var newCategory = _imapper.Map<Category>(category);
+                    
+                
                 await _unitOfWork.categoryRepository.AddAsync(newCategory);
                 return Ok("Category Added Successfully");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest("failed add this category");
             }
@@ -62,14 +62,9 @@ namespace Ecom.API.Controllers
         {
             try
             {
-                if(category is not null)
+                if (category is not null)
                 {
-                    var updatedCategory = new Category()
-                    {
-                        Id = category.CategoryId,
-                        Name = category.CategoryName,
-                        Description = category.CategoryDescription
-                    };
+                    var updatedCategory = _imapper.Map<Category>(category);
                     await _unitOfWork.categoryRepository.UpdateAsync(updatedCategory);
                     return Ok("Category Updeted successfully");
                 }
