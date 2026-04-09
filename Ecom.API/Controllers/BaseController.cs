@@ -9,11 +9,14 @@ namespace Ecom.API.Controllers
     [ApiController]
     public class BaseController : ControllerBase
     {
-        public readonly IUnitOfWork _unitOfWork;
+        protected readonly IUnitOfWork _unitOfWork;
+        protected readonly IMapper _imapper;
 
-        public BaseController(IUnitOfWork unitOfWork)
+        public BaseController(IUnitOfWork unitOfWork, IMapper imapper)
         {
-            _unitOfWork = unitOfWork;        }
+            _unitOfWork = unitOfWork;
+            _imapper = imapper;
+        }
 
     }
 }

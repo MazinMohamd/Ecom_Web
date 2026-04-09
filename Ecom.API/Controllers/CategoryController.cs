@@ -10,7 +10,7 @@ namespace Ecom.API.Controllers
 {
     public class CategoryController : BaseController
     {
-        public CategoryController(IUnitOfWork unitOfWork):base(unitOfWork) {}
+        public CategoryController(IUnitOfWork unitOfWork, IMapper mapper):base(unitOfWork, mapper) {}
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> Get()
@@ -44,12 +44,10 @@ namespace Ecom.API.Controllers
         {
             try
             {
-                var newCategory = new Category()
-                {
-                    Name = category.CategoryName,
-                    Description = category.CategoryDescription
-                };
 
+                var newCategory = _imapper.Map<Category>(category);
+                    
+                
                 await _unitOfWork.categoryRepository.AddAsync(newCategory);
                 return Ok("Category Added Successfully");
             }
@@ -64,14 +62,9 @@ namespace Ecom.API.Controllers
         {
             try
             {
-                if(category is not null)
+                if (category is not null)
                 {
-                    var updatedCategory = new Category()
-                    {
-                        Id = category.CategoryId,
-                        Name = category.CategoryName,
-                        Description = category.CategoryDescription
-                    };
+                    var updatedCategory = _imapper.Map<Category>(category);
                     await _unitOfWork.categoryRepository.UpdateAsync(updatedCategory);
                     return Ok("Category Updeted successfully");
                 }
